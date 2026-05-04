@@ -1,0 +1,54 @@
+databaseChangeLog:
+  - changeSet:
+      id: 011-create-snippets-table
+      author: ian
+      changes:
+        - createTable:
+            tableName: snippets
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_snippets_user
+                    references: users(id)
+                    deleteCascade: true
+              - column:
+                  name: content
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: source_url
+                  type: varchar(2048)
+              - column:
+                  name: source_title
+                  type: varchar(500)
+              - column:
+                  name: created_at
+                  type: timestamptz
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+        - createIndex:
+            tableName: snippets
+            indexName: idx_snippets_user_id
+            columns:
+              - column:
+                  name: user_id
+        - createIndex:
+            tableName: snippets
+            indexName: idx_snippets_created_at
+            columns:
+              - column:
+                  name: created_at
+      rollback:
+        - dropTable:
+            tableName: snippets

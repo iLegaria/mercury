@@ -1,0 +1,101 @@
+databaseChangeLog:
+  - changeSet:
+      id: 009a-create-flashcard-decks
+      author: ian
+      changes:
+        - createTable:
+            tableName: flashcard_decks
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_flashcard_decks_user
+                    references: users(id)
+                    deleteCascade: true
+              - column:
+                  name: name
+                  type: varchar(200)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: text
+              - column:
+                  name: created_at
+                  type: timestamptz
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamptz
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            tableName: flashcard_decks
+            constraintName: uq_flashcard_decks_user_name
+            columnNames: user_id, name
+        - createIndex:
+            tableName: flashcard_decks
+            indexName: idx_flashcard_decks_user_id
+            columns:
+              - column:
+                  name: user_id
+
+  - changeSet:
+      id: 009b-create-flashcard-cards
+      author: ian
+      changes:
+        - createTable:
+            tableName: flashcard_cards
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: deck_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_flashcard_cards_deck
+                    references: flashcard_decks(id)
+                    deleteCascade: true
+              - column:
+                  name: question
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: answer
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: card_index
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamptz
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+        - createIndex:
+            tableName: flashcard_cards
+            indexName: idx_flashcard_cards_deck_id
+            columns:
+              - column:
+                  name: deck_id

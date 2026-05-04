@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 014-add-whatsapp-reminder-to-decks
+      author: system
+      changes:
+        - addColumn:
+            tableName: flashcard_decks
+            columns:
+              - column:
+                  name: whatsapp_reminder_enabled
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false

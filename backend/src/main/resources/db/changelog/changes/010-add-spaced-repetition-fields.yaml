@@ -1,0 +1,29 @@
+databaseChangeLog:
+  - changeSet:
+      id: 010a
+      author: ianlegaria
+      changes:
+        - addColumn:
+            tableName: flashcard_cards
+            columns:
+              - column:
+                  name: repetitions
+                  type: INT
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ease_factor
+                  type: FLOAT
+                  defaultValueNumeric: 2.5
+                  constraints:
+                    nullable: false
+              - column:
+                  name: interval_days
+                  type: INT
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: next_review_at
+                  type: TIMESTAMP WITH TIME ZONE

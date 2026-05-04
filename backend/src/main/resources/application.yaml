@@ -1,0 +1,117 @@
+spring:
+  application:
+    name: knowledge-engine
+
+  docker:
+    compose:
+      file: ../docker-compose.dev.yml
+      lifecycle-management: start-only
+
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/knowledge_engine
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+server:
+  port: 8080
+  shutdown: graceful
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+  api-docs:
+    path: /api-docs
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+  health:
+    circuitbreakers:
+      enabled: true
+
+storage:
+  upload-dir: ${STORAGE_UPLOAD_DIR:${user.home}/knowledge-engine/uploads}
+
+cohere:
+  api-key: ${COHERE_API_KEY}
+  embedding-model: embed-multilingual-v3.0
+  chat-model: command-r-08-2024
+  base-url: https://api.cohere.com/v2
+
+green-api:
+  base-url: ${GREENAPI_BASE_URL:https://api.green-api.com}
+  instance-id: ${GREENAPI_INSTANCE_ID:}
+  token: ${GREENAPI_TOKEN:}
+  webhook-token: ${GREENAPI_WEBHOOK_TOKEN:}
+
+whatsapp:
+  enabled: ${WHATSAPP_ENABLED:false}
+  user-chat-id: ${WHATSAPP_USER_CHAT_ID:}
+  user-id: ${WHATSAPP_USER_ID:}
+  reminder-cron: ${WHATSAPP_REMINDER_CRON:0 0 8 * * *}
+  max-cards-per-session: ${WHATSAPP_MAX_CARDS:10}
+
+app:
+  rag:
+    max-chunks: 5
+    min-similarity: 0.3
+  chunking:
+    chunk-size: 2000
+    overlap: 200
+  search:
+    cache-ttl-minutes: 10
+  embedding:
+    batch-size: 96
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      cohereAPI:
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 30s
+        permitted-number-of-calls-in-half-open-state: 3
+        minimum-number-of-calls: 5

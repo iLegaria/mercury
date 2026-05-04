@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 013-add-extracted-text-to-documents
+      author: ian
+      changes:
+        - addColumn:
+            tableName: documents
+            columns:
+              - column:
+                  name: extracted_text
+                  type: TEXT
+                  constraints:
+                    nullable: true

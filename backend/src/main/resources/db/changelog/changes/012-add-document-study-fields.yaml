@@ -1,0 +1,44 @@
+databaseChangeLog:
+  - changeSet:
+      id: 012a-add-source-document-to-flashcard-decks
+      author: ian
+      changes:
+        - addColumn:
+            tableName: flashcard_decks
+            columns:
+              - column:
+                  name: source_document_id
+                  type: uuid
+                  constraints:
+                    nullable: true
+                    foreignKeyName: fk_flashcard_decks_source_document
+                    references: documents(id)
+                    deleteCascade: true
+        - createIndex:
+            tableName: flashcard_decks
+            indexName: idx_flashcard_decks_source_document_id
+            columns:
+              - column:
+                  name: source_document_id
+
+  - changeSet:
+      id: 012b-add-document-to-quiz-sessions
+      author: ian
+      changes:
+        - addColumn:
+            tableName: quiz_sessions
+            columns:
+              - column:
+                  name: document_id
+                  type: uuid
+                  constraints:
+                    nullable: true
+                    foreignKeyName: fk_quiz_sessions_document
+                    references: documents(id)
+                    deleteCascade: true
+        - createIndex:
+            tableName: quiz_sessions
+            indexName: idx_quiz_sessions_document_id
+            columns:
+              - column:
+                  name: document_id

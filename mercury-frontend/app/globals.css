@@ -1,0 +1,217 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background:              var(--background);
+  --color-foreground:              var(--foreground);
+  --color-card:                    var(--card);
+  --color-card-foreground:         var(--card-foreground);
+  --color-popover:                 var(--popover);
+  --color-popover-foreground:      var(--popover-foreground);
+  --color-primary:                 var(--primary);
+  --color-primary-foreground:      var(--primary-foreground);
+  --color-secondary:               var(--secondary);
+  --color-secondary-foreground:    var(--secondary-foreground);
+  --color-muted:                   var(--muted);
+  --color-muted-foreground:        var(--muted-foreground);
+  --color-accent:                  var(--accent);
+  --color-accent-foreground:       var(--accent-foreground);
+  --color-destructive:             var(--destructive);
+  --color-border:                  var(--border);
+  --color-input:                   var(--input);
+  --color-ring:                    var(--ring);
+  --color-sidebar-ring:            var(--sidebar-ring);
+  --color-sidebar-border:          var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent:          var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary:         var(--sidebar-primary);
+  --color-sidebar-foreground:      var(--sidebar-foreground);
+  --color-sidebar:                 var(--sidebar);
+  --color-mercury:                 var(--mercury-accent);
+  --radius-sm:  calc(var(--radius) * 0.6);
+  --radius-md:  calc(var(--radius) * 0.8);
+  --radius-lg:  var(--radius);
+  --radius-xl:  calc(var(--radius) * 1.4);
+  --font-sans:  var(--font-jetbrains);
+  --font-mono:  var(--font-jetbrains);
+}
+
+:root {
+  /* ── Mercury Design System ── */
+  --mercury-accent:  #e8952a;
+  --accent-dim:      rgba(232, 149, 42, 0.08);
+  --accent-glow:     rgba(232, 149, 42, 0.22);
+  --accent-text:     #f5b563;
+  --cold:            #4a7fa8;
+  --cold-dim:        rgba(74, 127, 168, 0.10);
+  --text-muted-col:  #6e6758;
+  --text-subtle:     #9e9678;
+  --surface-1:       #1a1714;
+  --surface-2:       #252118;
+  --surface-3:       #302c22;
+  --border-accent:   rgba(232, 149, 42, 0.3);
+  --success:         #4a9e6b;
+  --error:           #c0504a;
+  --warning:         #d4893a;
+  --info:            #4a7fa8;
+  --status-pending:    rgba(74, 127, 168, 0.15);
+  --status-processing: rgba(212, 137, 58, 0.15);
+  --status-completed:  rgba(74, 158, 107, 0.15);
+  --status-failed:     rgba(192, 80, 74, 0.15);
+
+  /* ── shadcn/ui tokens → Mercury ── */
+  --background:           #05070e;
+  --foreground:           #cec5a8;
+  --card:                 #0d0b12;
+  --card-foreground:      #cec5a8;
+  --popover:              #0d0b12;
+  --popover-foreground:   #cec5a8;
+  --primary:              #e8952a;
+  --primary-foreground:   #05070e;
+  --secondary:            #1a1714;
+  --secondary-foreground: #cec5a8;
+  --muted:                #13101a;
+  --muted-foreground:     #6e6758;
+  --accent:               #13101a;
+  --accent-foreground:    #cec5a8;
+  --destructive:          #c0504a;
+  --border:               #121420;
+  --input:                #1a1714;
+  --ring:                 #e8952a;
+  --radius:               0.25rem;
+  --sidebar:                     #0d0b12;
+  --sidebar-foreground:          #cec5a8;
+  --sidebar-primary:             #e8952a;
+  --sidebar-primary-foreground:  #05070e;
+  --sidebar-accent:              #13101a;
+  --sidebar-accent-foreground:   #cec5a8;
+  --sidebar-border:              #121420;
+  --sidebar-ring:                #e8952a;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-jetbrains, 'JetBrains Mono'), monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+}
+
+/* ── Mercury background effects ── */
+
+.mercury-glow {
+  position: fixed;
+  bottom: -200px;
+  right: -200px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(
+    circle,
+    rgba(232, 149, 42, 0.18) 0%,
+    rgba(232, 100, 20, 0.08) 40%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 1;
+  animation: mercuryPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes mercuryPulse {
+  0%   { opacity: 0.6; transform: scale(1); }
+  100% { opacity: 1.0; transform: scale(1.08); }
+}
+
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.028;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Layout ── */
+.layout-wrapper {
+  display: flex;
+  height: calc(100vh - 56px);
+  margin-top: 56px;
+  overflow: hidden;
+}
+.layout-main {
+  flex: 1;
+  padding: 36px 40px;
+  min-width: 0;
+  overflow-y: auto;
+}
+
+/* ── Skeleton ── */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 0.35; }
+  50%       { opacity: 0.7; }
+}
+.skeleton {
+  background: var(--surface-2);
+  border-radius: 2px;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .layout-sidebar { display: none; }
+  .layout-main    { padding: 20px 16px; }
+}
+
+/* Flashcard 3D flip */
+.card-scene {
+  perspective: 1000px;
+}
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+.card-inner.flipped {
+  transform: rotateY(180deg);
+}
+.card-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.card-back-face {
+  transform: rotateY(180deg);
+}
+
+@keyframes blink {
+  0%, 80%, 100% { opacity: 0.1; }
+  40% { opacity: 1; }
+}
+
+.thinking-dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--mercury-accent);
+  animation: blink 1.2s infinite;
+}
+.thinking-dot:nth-child(2) { animation-delay: 0.2s; }
+.thinking-dot:nth-child(3) { animation-delay: 0.4s; }

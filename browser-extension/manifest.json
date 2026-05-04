@@ -1,0 +1,20 @@
+{
+  "manifest_version": 2,
+  "name": "Mercury Knowledge Engine",
+  "version": "1.0.0",
+  "description": "Save web snippets to your personal knowledge engine",
+  "permissions": [
+    "contextMenus",
+    "storage",
+    "tabs",
+    "http://localhost:8080/*"
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_title": "Mercury Snippets"
+  }
+}

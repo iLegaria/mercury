@@ -1,0 +1,66 @@
+databaseChangeLog:
+  - changeSet:
+      id: 016-create-outbox-events-table
+      author: ian
+      changes:
+        - createTable:
+            tableName: outbox_events
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: aggregate_type
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: aggregate_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: event_type
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: exchange
+                  type: VARCHAR(200)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: routing_key
+                  type: VARCHAR(200)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: payload
+                  type: JSONB
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMPTZ
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: processed_at
+                  type: TIMESTAMPTZ
+                  constraints:
+                    nullable: true
+        - createIndex:
+            indexName: idx_outbox_unprocessed
+            tableName: outbox_events
+            columns:
+              - column:
+                  name: created_at
+            where: processed_at IS NULL
+      rollback:
+        - dropTable:
+            tableName: outbox_events

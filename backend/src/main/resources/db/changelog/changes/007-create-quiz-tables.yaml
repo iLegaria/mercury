@@ -1,0 +1,125 @@
+databaseChangeLog:
+  - changeSet:
+      id: 007a-create-quiz-sessions
+      author: ian
+      changes:
+        - createTable:
+            tableName: quiz_sessions
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_quiz_sessions_user
+                    references: users(id)
+                    deleteCascade: true
+              - column:
+                  name: collection_id
+                  type: uuid
+                  constraints:
+                    nullable: true
+                    foreignKeyName: fk_quiz_sessions_collection
+                    references: collections(id)
+              - column:
+                  name: status
+                  type: varchar(20)
+                  defaultValue: ACTIVE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: total_questions
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: correct_answers
+                  type: int
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamptz
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamptz
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+        - createIndex:
+            tableName: quiz_sessions
+            indexName: idx_quiz_sessions_user_id
+            columns:
+              - column:
+                  name: user_id
+
+  - changeSet:
+      id: 007b-create-quiz-questions
+      author: ian
+      changes:
+        - createTable:
+            tableName: quiz_questions
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: session_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_quiz_questions_session
+                    references: quiz_sessions(id)
+                    deleteCascade: true
+              - column:
+                  name: question_text
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: context_used
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: question_index
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_answer
+                  type: text
+              - column:
+                  name: feedback
+                  type: text
+              - column:
+                  name: is_correct
+                  type: boolean
+              - column:
+                  name: created_at
+                  type: timestamptz
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: answered_at
+                  type: timestamptz
+        - createIndex:
+            tableName: quiz_questions
+            indexName: idx_quiz_questions_session_id
+            columns:
+              - column:
+                  name: session_id

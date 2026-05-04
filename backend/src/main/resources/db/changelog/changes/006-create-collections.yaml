@@ -1,0 +1,85 @@
+databaseChangeLog:
+  - changeSet:
+      id: 006a-create-collections-table
+      author: ilegaria
+      changes:
+        - createTable:
+            tableName: collections
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(200)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp with time zone
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp with time zone
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: collections
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_collections_user
+            onDelete: CASCADE
+        - addUniqueConstraint:
+            tableName: collections
+            columnNames: user_id, name
+            constraintName: uq_collections_user_name
+        - createIndex:
+            tableName: collections
+            indexName: idx_collections_user_id
+            columns:
+              - column:
+                  name: user_id
+      rollback:
+        - dropTable:
+            tableName: collections
+
+  - changeSet:
+      id: 006b-add-collection-id-to-documents
+      author: ilegaria
+      changes:
+        - addColumn:
+            tableName: documents
+            columns:
+              - column:
+                  name: collection_id
+                  type: uuid
+        - addForeignKeyConstraint:
+            baseTableName: documents
+            baseColumnNames: collection_id
+            referencedTableName: collections
+            referencedColumnNames: id
+            constraintName: fk_documents_collection
+            onDelete: SET NULL
+        - createIndex:
+            tableName: documents
+            indexName: idx_documents_collection_id
+            columns:
+              - column:
+                  name: collection_id
+      rollback:
+        - dropColumn:
+            tableName: documents
+            columnName: collection_id
