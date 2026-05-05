@@ -1,4 +1,4 @@
-# Personal Knowledge Engine
+# Mercury - Personal Knowledge Engine
 
 A self-hosted RAG backend that turns your documents into a queryable knowledge base. Upload PDFs, Word files, and plain text — then ask questions answered from your own content, stream answers token by token, generate LLM-graded quizzes, and study with spaced-repetition flashcards — including daily review sessions delivered directly via WhatsApp.
 
