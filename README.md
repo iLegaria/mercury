@@ -34,7 +34,7 @@ Built as a portfolio project to demonstrate production-grade backend engineering
 
 ## Architecture
 
-Design tradeoffs are documented in [Architecture Decision Records](docs/adr/README.md).
+Detailed backend flows are documented in [Architecture](docs/architecture.md). Design tradeoffs are documented in [Architecture Decision Records](docs/adr/README.md).
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
