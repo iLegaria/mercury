@@ -32,6 +32,22 @@ Built as a portfolio project to demonstrate production-grade backend engineering
 
 ---
 
+## Demo Clips
+
+### Quiz generation and grading
+
+![Quiz workflow](quiz.gif)
+
+### Flashcard study workflow
+
+![Flashcard workflow](flashcards.gif)
+
+### Snippet capture and reuse
+
+![Snippet workflow](snippet.gif)
+
+---
+
 ## Architecture
 
 Detailed backend flows are documented in [Architecture](docs/architecture.md). Design tradeoffs are documented in [Architecture Decision Records](docs/adr/README.md).
@@ -44,6 +60,19 @@ Key backend flows:
 - Quiz generation, grading, and flashcard creation
 - WhatsApp flashcard review sessions
 - Failure handling, metrics, and correlation IDs
+
+---
+
+## Roadmap
+
+Planned backend improvements:
+
+- **Pluggable LLM provider layer** — introduce `ChatProvider` and `EmbeddingProvider` interfaces so chat and embedding providers can be configured independently. Example combinations: Cohere chat + Cohere embeddings, Claude chat + Cohere embeddings, OpenAI chat + OpenAI embeddings, or Ollama for local chat.
+- **Spring Security + JWT authentication** — replace local user selection with login, password hashing, JWT access tokens, and authenticated user resolution from the security context.
+- **Ingestion retry and DLQ reprocessing** — add explicit retry policy, operational visibility for dead-letter queues, and a controlled way to requeue failed ingestion messages.
+- **Idempotent document uploads** — support an `Idempotency-Key` header so client retries do not create duplicate documents.
+- **API contract coverage** — add controller-level tests and OpenAPI examples for success and error responses.
+- **Observability improvements** — add structured JSON logs, latency timers, cache hit/miss metrics, and provider-specific Cohere/OpenAI/Anthropic failure metrics.
 
 ---
 
