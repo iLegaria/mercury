@@ -32,6 +32,22 @@ Built as a portfolio project to demonstrate production-grade backend engineering
 
 ---
 
+## Demo Clips
+
+### Quiz generation and grading
+
+![Quiz workflow](quiz.gif)
+
+### Flashcard study workflow
+
+![Flashcard workflow](flashcards.gif)
+
+### Snippet capture and reuse
+
+![Snippet workflow](snippet.gif)
+
+---
+
 ## Architecture
 
 Detailed backend flows are documented in [Architecture](docs/architecture.md). Design tradeoffs are documented in [Architecture Decision Records](docs/adr/README.md).
