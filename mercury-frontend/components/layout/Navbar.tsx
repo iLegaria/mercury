@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import UserBadge from './UserBadge';
 
 export default function Navbar() {
@@ -22,6 +23,9 @@ export default function Navbar() {
         justifyContent: 'space-between',
       }}>
         <Link href="/" style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '10px',
           fontFamily: 'var(--font-cinzel), Cinzel, serif',
           fontSize: '13px',
           fontWeight: 600,
@@ -30,6 +34,14 @@ export default function Navbar() {
           textDecoration: 'none',
           textTransform: 'uppercase',
         }}>
+          <Image
+            src="/mercury-logo.svg"
+            alt=""
+            width={24}
+            height={24}
+            priority
+            style={{ display: 'block', filter: 'drop-shadow(0 0 10px rgba(245,184,65,0.22))' }}
+          />
           Mercury
         </Link>
         <UserBadge />
