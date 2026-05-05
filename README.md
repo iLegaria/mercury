@@ -4,6 +4,7 @@ A self-hosted RAG backend that turns your documents into a queryable knowledge b
 
 Built as a portfolio project to demonstrate production-grade backend engineering: async pipelines, vector search, LLM integration, resilience patterns, and observable services.
 
+![Backend CI](https://github.com/iLegaria/mercury/actions/workflows/backend-ci.yml/badge.svg)
 ![Java](https://img.shields.io/badge/Java-21-ED8B00?logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5-6DB33F?logo=springboot&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL%20%2B%20pgvector-16-4169E1?logo=postgresql&logoColor=white)
