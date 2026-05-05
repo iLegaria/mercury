@@ -34,61 +34,16 @@ Built as a portfolio project to demonstrate production-grade backend engineering
 
 ## Architecture
 
-Design tradeoffs are documented in [Architecture Decision Records](docs/adr/README.md).
+Detailed backend flows are documented in [Architecture](docs/architecture.md). Design tradeoffs are documented in [Architecture Decision Records](docs/adr/README.md).
 
-```
-┌──────────────────────────────────────────────────────────────────────────────┐
-│                              REST API (:8080)                                │
-│  /documents  /search  /quiz  /flashcards  /collections  /snippets  /users   │
-│  /whatsapp/webhook  (Green API inbound)                                      │
-└──────┬──────────────┬────────────────┬───────────────┬──────────┬────────────┘
-       │              │                │               │          │
-       ▼              ▼                ▼               ▼          ▼
-┌──────────┐   ┌─────────────┐  ┌──────────┐  ┌───────────┐  ┌──────────┐
-│ Document │   │   Search    │  │   Quiz   │  │ Flashcard │  │WhatsApp  │
-│ Service  │   │   Service   │  │ Service  │  │  Service  │  │ Service  │
-└────┬─────┘   └──────┬──────┘  └────┬─────┘  └─────┬─────┘  └────┬─────┘
-     │                │              │               │              │
-     ▼                ▼              ▼               │ SM-2         │ Green API
-┌─────────┐    ┌──────────────┐  ┌───────────┐      │ algorithm    ▼ WebClient
-│ Outbox  │    │ Redis Cache  │  │  Cohere   │      ▼         ┌──────────────┐
-│ Events  │    │  (10 min TTL)│  │Command-R  │  ┌──────────┐  │  Reminder    │
-└────┬────┘    └──────┬───────┘  └───────────┘  │PostgreSQL│  │  Scheduler   │
-     │ relay           │ miss                     └──────────┘  │  (cron 8AM)  │
-     │ (5 min)         ▼                                        └──────────────┘
-     ▼          ┌──────────────┐
-┌──────────┐    │  PostgreSQL  │
-│ RabbitMQ │    │  + pgvector  │
-│ Exchange │    └──────────────┘
-└────┬─────┘
-     │
-  ┌──┴──────────────────┐
-  ▼                      ▼
-┌─────────────────┐  ┌──────────────────┐
-│  ingestion.q    │  │  flashcard.q     │
-│    + DLQ        │  │    + DLQ         │
-└────────┬────────┘  └────────┬─────────┘
-         │                    │
-         ▼                    ▼
-┌──────────────┐    ┌────────────────────┐
-│  Ingestion   │    │  FlashcardGen      │
-│  Consumer    │    │  Consumer          │
-└──────┬───────┘    └────────────────────┘
-       │
-       ▼
-┌──────────────┐    ┌───────────────────┐    ┌──────────────┐
-│ Apache Tika  │ →  │  Cohere Embed     │ →  │  pgvector    │
-│(text extract)│    │(multilingual-v3.0)│    │(cosine sim.) │
-└──────────────┘    └───────────────────┘    └──────────────┘
-```
+Key backend flows:
 
-**Document ingestion flow:** Upload → save `OutboxEvent` to DB in the same transaction → `OutboxRelayScheduler` picks it up within 5 min → publish to `ingestion.q` → `IngestionConsumer` extracts text (Tika) → chunk (~2000 chars, paragraph-aware with 200-char overlap) → embed (Cohere) → store vectors in pgvector. Status: `PENDING → PROCESSING → COMPLETED/FAILED`. Both queues have a dead-letter queue for undeliverable messages.
-
-**Async flashcard generation:** After ingestion completes or on-demand, a `FlashcardGenerationEvent` is published to a separate `flashcard.q`. `FlashcardGenerationConsumer` calls Cohere to extract Q&A pairs from document chunks and saves them as a flashcard deck.
-
-**RAG query flow:** Embed question → search pgvector (cosine similarity, min threshold 0.3) → build context from top-k chunks → generate grounded answer with Cohere Command-R. For streaming (`Accept: text/event-stream`), `RAGService.askStream()` returns a `Flux<String>` with three SSE event types: `sources` (retrieved chunks, first), `token` (individual answer tokens), and `done`.
-
-**WhatsApp review flow:** `FlashcardReminderScheduler` runs daily at 8 AM (configurable cron) → fetches due cards for the configured user → sends the first card via Green API → stores the session in Redis → user replies → webhook receives the reply → Cohere grades it → SM-2 updated → next card sent. Loop continues until all cards are reviewed.
+- Document upload and async ingestion through RabbitMQ
+- Transactional outbox publishing for ingestion events
+- RAG query and streaming response pipeline
+- Quiz generation, grading, and flashcard creation
+- WhatsApp flashcard review sessions
+- Failure handling, metrics, and correlation IDs
 
 ---
 
