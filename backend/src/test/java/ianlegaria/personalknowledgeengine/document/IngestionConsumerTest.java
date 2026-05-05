@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -87,9 +87,9 @@ class IngestionConsumerTest {
         when(embeddingService.generateDocumentEmbeddingsBatch(anyList()))
                 .thenThrow(new RuntimeException("Cohere down"));
 
-        assertThatThrownBy(() -> ingestionConsumer.processDocument(DocumentIngestionEvent.builder()
+        assertThatCode(() -> ingestionConsumer.processDocument(DocumentIngestionEvent.builder()
                 .documentId(docId).title("Test").sourceType("TXT").textContent("some text").build()))
-                .isInstanceOf(RuntimeException.class);
+                .doesNotThrowAnyException();
 
         verify(ingestionPersistenceService).markFailed(docId);
     }
@@ -100,9 +100,9 @@ class IngestionConsumerTest {
         when(textExtractionService.extractFromPath(any(Path.class)))
                 .thenThrow(new RuntimeException("extraction failed"));
 
-        assertThatThrownBy(() -> ingestionConsumer.processDocument(DocumentIngestionEvent.builder()
+        assertThatCode(() -> ingestionConsumer.processDocument(DocumentIngestionEvent.builder()
                 .documentId(docId).title("Test").sourceType("TXT").filePath("/tmp/bad.txt").build()))
-                .isInstanceOf(RuntimeException.class);
+                .doesNotThrowAnyException();
 
         verify(ingestionPersistenceService).markFailed(docId);
     }
